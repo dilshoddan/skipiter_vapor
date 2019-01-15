@@ -66,19 +66,7 @@ final class UserController {
             .transform(to: HTTPResponse(status: .ok))
     }
     
-    func listSkips(_ req: Request) throws -> Future<[Skip.SkipForm]> {
-        let user = try req.requireAuthenticated(User.self)
-        return try Skip
-            .query(on: req)
-            .filter(\Skip.userID, .equal, user.requireID())
-            .all().map { skips in
-                var skipForms : [Skip.SkipForm] = []
-                for skip in skips {
-                    skipForms.append(Skip.SkipForm(text: skip.text))
-                }
-            return skipForms
-        }
-    }
+    
     
     func deleteSkips(_ req: Request) throws -> Future<Response> {
         let user = try req.requireAuthenticated(User.self)

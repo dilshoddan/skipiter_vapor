@@ -25,15 +25,43 @@ final class SkipController {
                         userID: userId
                     )
                     return newSkip.save(on: req).map { s in
-                        return Skip.SkipForm(text: s.text)
+                        return Skip.SkipForm(text: s.text, date: s.date)
                     }
                 }
             }
         } else {
             throw Abort(HTTPStatus.unauthorized)
         }
-        
-        
+    }
+    
+    
+    func listSkips(_ req: Request) throws -> Future<[Skip.SkipForm]> {
+        let user = try req.requireAuthenticated(User.self)
+        return try Skip
+            .query(on: req)
+            .filter(\Skip.userID, .equal, user.requireID())
+            .all().map { skips in
+                var skipForms : [Skip.SkipForm] = []
+                for skip in skips {
+                    skipForms.append(Skip.SkipForm(text: skip.text, date: skip.date))
+                }
+                return skipForms
+        }
+    }
+    
+    
+    
+    func listAllSkips(_ req: Request) throws -> Future<[Skip.SkipForm]> {
+        let user = try req.requireAuthenticated(User.self)
+        return Skip
+            .query(on: req)
+            .all().map { skips in
+                var skipForms : [Skip.SkipForm] = []
+                for skip in skips {
+                    skipForms.append(Skip.SkipForm(text: skip.text, date: skip.date))
+                }
+                return skipForms
+        }
     }
     
     
