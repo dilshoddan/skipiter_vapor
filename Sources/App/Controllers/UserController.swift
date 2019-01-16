@@ -29,8 +29,8 @@ final class UserController {
     }
     
     func login(_ req: Request) throws -> Future<Token> {
-        return try req.content.decode(User.self).flatMap { user in
-            return User.query(on: req).filter(\.email == user.email).first().flatMap { fetchedUser in
+        return try req.content.decode(User.UserLogin.self).flatMap { user in
+            return User.query(on: req).filter(\.name == user.name).first().flatMap { fetchedUser in
                 guard let existingUser = fetchedUser else {
                     throw Abort(HTTPStatus.notFound)
                 }

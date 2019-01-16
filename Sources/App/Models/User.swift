@@ -36,6 +36,11 @@ extension User {
         let name: String
         let email: String
     }
+    
+    struct UserLogin: Content {
+        let name: String
+        let password: String
+    }
 }
 
 extension User: TokenAuthenticatable {

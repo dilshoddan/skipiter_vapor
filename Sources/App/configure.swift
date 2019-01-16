@@ -23,7 +23,7 @@ public func configure(_ config: inout Config,
     
     try services.register(FluentSQLiteProvider())
     var databases = DatabasesConfig()
-    try databases.add(database: SQLiteDatabase(storage: .file(path: "skipiter_web_db")), as: .sqlite)
+    try databases.add(database: SQLiteDatabase(storage: .file(path: "skipiter_vapor_db")), as: .sqlite)
     //.file(path: "skipiter_web_db")  - permanent will create a db file on disk
     //.memory ~ temporary will be destroyed on re-run
     services.register(databases)

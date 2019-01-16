@@ -53,21 +53,28 @@ final class SkipController {
     
     func listAllSkips(_ req: Request) throws -> Future<[Skip.SkipForm]> {
         _ = try req.requireAuthenticated(User.self)
-        return Skip
-            .query(on: req)
-            .all().map { skips in
-                var skipForms : [Skip.SkipForm] = []
-                for skip in skips {
-                    User
-                        .query(on: req)
-                        .filter(\User.id, .equal, skip.userID).first().map { user in
-                            skipForms.append(Skip.SkipForm(text: skip.text, date: skip.date, userName: user?.name))
-                    }
-                    
-                }
-                return skipForms
+        return Skip.query(on: req).join(\User.id, to: \Skip.userID).alsoDecode(User.self).all().map { results in
+            var skipForms : [Skip.SkipForm] = []
+            for result in results {
+                skipForms.append(Skip.SkipForm(text: result.0.text, date: result.0.date, userName: result.1.name))
+            }
+            return skipForms
+            
         }
+        
     }
 }
 
 
+//User.query(on: req).filter(\User.id, .equal, skip.userID).first().map { user in return user}
+// var skipForms : [Skip.SkipForm] = []
+//for skip in skips {
+//    let user: User = User.find(skip.userID, on: req)
+//    //                        . { user -> User.UserPublic in
+//    //                        return User.UserPublic(id: (user?.id)!, name: (user?.name)!, email: (user?.email)!)
+//
+//    //}
+//    skipForms.append(Skip.SkipForm(text: skip.text, date: skip.date, userName: user.name))
+//
+//}
+//return skipForms
