@@ -16,11 +16,12 @@ final class UserController {
         return try req.content.decode(User.self).flatMap { user in
             let hasher = try req.make(BCryptDigest.self)
             let passwordHashed = try hasher.hash(user.password)
-            let newUser = User(email: user.email, password: passwordHashed)
+            let newUser = User(name: user.name, email: user.email, password: passwordHashed)
             
             return newUser.save(on: req).map { storedUser in
                 return User.UserPublic(
                     id: try storedUser.requireID(),
+                    name: storedUser.name,
                     email: storedUser.email
                 )
             }

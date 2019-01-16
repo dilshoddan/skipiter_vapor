@@ -11,11 +11,13 @@ import Authentication
 
 final class User: SQLiteModel {
     var id: Int?
+    var name: String
     var email: String
     var password: String
     
-    init(id: Int? = nil, email: String, password: String) {
+    init(id: Int? = nil, name: String, email: String, password: String) {
         self.id = id
+        self.name = name
         self.email = email
         self.password = password
     }
@@ -31,6 +33,7 @@ extension User: Parameter {}
 extension User {
     struct UserPublic: Content {
         let id: Int
+        let name: String
         let email: String
     }
 }
