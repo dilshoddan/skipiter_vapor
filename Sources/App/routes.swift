@@ -20,8 +20,8 @@ public func routes(_ router: Router) throws {
     authedRoutes.get("listAllSkips", use: skipController.listAllSkips)
     authedRoutes.post("skip", use: skipController.create)
     authedRoutes.post("deleteASkip", use: skipController.deleteASkip)
-    authedRoutes.post("users", use: userController.searchUsers)
-    authedRoutes.post("skips", use: skipController.skips)
+    authedRoutes.get("users", use: userController.searchUsers)
+    authedRoutes.get("skips", use: skipController.skips)
     
     
     
