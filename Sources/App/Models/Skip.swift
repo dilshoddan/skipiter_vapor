@@ -30,6 +30,7 @@ extension Skip: Parameter {}
 
 extension Skip {
     struct SkipForm: Content {
+        var id: Int?
         var text: String
         var date: Date?
         var userName: String?

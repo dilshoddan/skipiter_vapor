@@ -14,16 +14,22 @@ final class UserController {
     
     func register(_ req: Request) throws -> Future<User.UserPublic> {
         return try req.content.decode(User.self).flatMap { user in
-            let hasher = try req.make(BCryptDigest.self)
-            let passwordHashed = try hasher.hash(user.password)
-            let newUser = User(name: user.name, email: user.email, password: passwordHashed)
-            
-            return newUser.save(on: req).map { storedUser in
-                return User.UserPublic(
-                    id: try storedUser.requireID(),
-                    name: storedUser.name,
-                    email: storedUser.email
-                )
+            return User.query(on: req).filter(\.name == user.name).count().flatMap{ numberOfUsers in
+                if numberOfUsers > 0 {
+                    throw Abort(HTTPStatus.imUsed)
+                }
+                
+                let hasher = try req.make(BCryptDigest.self)
+                let passwordHashed = try hasher.hash(user.password)
+                let newUser = User(name: user.name, email: user.email, password: passwordHashed)
+                
+                return newUser.save(on: req).map { storedUser in
+                    return User.UserPublic(
+                        id: try storedUser.requireID(),
+                        name: storedUser.name,
+                        email: storedUser.email
+                    )
+                }
             }
         }
     }
@@ -67,6 +73,18 @@ final class UserController {
             .transform(to: HTTPResponse(status: .ok))
     }
     
+    func searchUsers(_ req: Request) throws -> Future<[User.UserFacade]> {
+        _ = try req.requireAuthenticated(User.self)
+        return User.query(on: req).all().map { users in
+            var userPublics : [User.UserFacade] = []
+            for user in users {
+                userPublics.append(User.UserFacade(name: user.name, email: user.email))
+            }
+            return userPublics
+            
+        }
+    }
+    
     
     
     func deleteSkips(_ req: Request) throws -> Future<Response> {
@@ -76,7 +94,7 @@ final class UserController {
                 if let user = user {
                     return try user.skips.query(on: req).delete().map { _ in
                         return req.response(http: HTTPResponse(status: .ok))
-                    
+                        
                     }
                 } else {
                     throw Abort(HTTPStatus.expectationFailed, reason: "User not found on DB")

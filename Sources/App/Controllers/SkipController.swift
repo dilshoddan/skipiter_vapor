@@ -25,7 +25,7 @@ final class SkipController {
                         userID: userId
                     )
                     return newSkip.save(on: req).map { s in
-                        return Skip.SkipForm(text: s.text, date: s.date, userName: userName)
+                        return Skip.SkipForm(id: s.id, text: s.text, date: s.date, userName: userName)
                     }
                 }
             }
@@ -43,7 +43,7 @@ final class SkipController {
             .all().map { skips in
                 var skipForms : [Skip.SkipForm] = []
                 for skip in skips {
-                    skipForms.append(Skip.SkipForm(text: skip.text, date: skip.date, userName: user.name))
+                    skipForms.append(Skip.SkipForm(id: skip.id, text: skip.text, date: skip.date, userName: user.name))
                 }
                 return skipForms
         }
@@ -56,13 +56,46 @@ final class SkipController {
         return Skip.query(on: req).join(\User.id, to: \Skip.userID).alsoDecode(User.self).all().map { results in
             var skipForms : [Skip.SkipForm] = []
             for result in results {
-                skipForms.append(Skip.SkipForm(text: result.0.text, date: result.0.date, userName: result.1.name))
+                skipForms.append(Skip.SkipForm(id: result.0.id, text: result.0.text, date: result.0.date, userName: result.1.name))
             }
             return skipForms
             
         }
         
     }
+    
+    func skips(_ req: Request) throws -> Future<[Skip.SkipForm]> {
+        _ = try req.requireAuthenticated(User.self)
+        return Skip.query(on: req).join(\User.id, to: \Skip.userID).alsoDecode(User.self).all().map { results in
+            var skipForms : [Skip.SkipForm] = []
+            for result in results {
+                skipForms.append(Skip.SkipForm(id: result.0.id, text: result.0.text, date: result.0.date, userName: result.1.name))
+            }
+            return skipForms
+            
+        }
+        
+    }
+    
+    
+    func deleteASkip(_ req: Request) throws -> Future<Response> {
+        _ = try req.requireAuthenticated(User.self)
+        return try req.content.decode(Skip.SkipForm.self).flatMap { skipForm in
+            return Skip.find(skipForm.id!, on: req).flatMap { skip in
+                if let skip = skip {
+                    return skip.delete(on: req).map { _ in
+                        return req.response(http: HTTPResponse(status: .ok))
+                        
+                    }
+                } else {
+                    throw Abort(HTTPStatus.expectationFailed, reason: "Skip not found")
+                }
+                
+            }
+        }
+    }
+    
+    
 }
 
 

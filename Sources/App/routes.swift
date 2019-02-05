@@ -8,6 +8,8 @@ public func routes(_ router: Router) throws {
     
     router.post("register", use: userController.register)
     router.post("login", use: userController.login)
+//    router.get("users", use: userController.searchUsers)
+//    router.get("skips", use: skipController.skips)
     
     let tokenAuthenticationMiddleware = User.tokenAuthMiddleware()
     let authedRoutes = router.grouped(tokenAuthenticationMiddleware)
@@ -17,6 +19,10 @@ public func routes(_ router: Router) throws {
     authedRoutes.get("listSkips", use: skipController.listSkips)
     authedRoutes.get("listAllSkips", use: skipController.listAllSkips)
     authedRoutes.post("skip", use: skipController.create)
+    authedRoutes.post("deleteASkip", use: skipController.deleteASkip)
+    authedRoutes.post("users", use: userController.searchUsers)
+    authedRoutes.post("skips", use: skipController.skips)
+    
     
     
     //router.post("skip", use: skipController.create)
