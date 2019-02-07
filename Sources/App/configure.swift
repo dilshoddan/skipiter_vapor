@@ -34,6 +34,7 @@ public func configure(_ config: inout Config,
     migrations.add(model: User.self, database: .sqlite)
     migrations.add(model: Token.self, database: .sqlite)
     migrations.add(model: Skip.self, database: .sqlite)
+    migrations.add(model: Comment.self, database: .sqlite)
     services.register(migrations)
     
     

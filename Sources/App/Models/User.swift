@@ -56,6 +56,10 @@ extension User {
     var skips: Children<User, Skip> {
         return children(\.userID)
     }
+    
+    var comments: Children<User, Comment> {
+        return children(\.userID)
+    }
 }
 
 

@@ -5,6 +5,7 @@ public func routes(_ router: Router) throws {
     
     let userController = UserController()
     let skipController = SkipController()
+    let commentController = CommentController()
     
     router.post("register", use: userController.register)
     router.post("login", use: userController.login)
@@ -16,14 +17,16 @@ public func routes(_ router: Router) throws {
     authedRoutes.get("profile", use: userController.profile)
     authedRoutes.get("logout", use: userController.logout)
     authedRoutes.get("deleteSkips", use: userController.deleteSkips)
+    authedRoutes.get("users", use: userController.searchUsers)
+    
     authedRoutes.get("listSkips", use: skipController.listSkips)
     authedRoutes.get("listAllSkips", use: skipController.listAllSkips)
     authedRoutes.post("skip", use: skipController.create)
     authedRoutes.post("deleteASkip", use: skipController.deleteASkip)
-    authedRoutes.get("users", use: userController.searchUsers)
     authedRoutes.get("skips", use: skipController.skips)
     
-    
+    authedRoutes.post("comment", use: commentController.create)
+    authedRoutes.post("comments", use: commentController.listCommentsForSkip)
     
     //router.post("skip", use: skipController.create)
     

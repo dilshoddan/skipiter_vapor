@@ -35,10 +35,18 @@ extension Skip {
         var date: Date?
         var userName: String?
     }
+    
+    struct SkipId: Content {
+        var skipId: Int
+    }
 }
 
 extension Skip {
     var user: Parent<Skip, User> {
         return parent(\.userID)
+    }
+    
+    var comments: Children<Skip, Comment> {
+        return children(\.skipID)
     }
 }
