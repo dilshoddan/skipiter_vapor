@@ -37,6 +37,10 @@ extension User {
         let email: String
     }
     
+    struct UserId: Content {
+        let userId: Int
+    }
+    
     struct UserFacade: Content {
         let name: String
         let email: String

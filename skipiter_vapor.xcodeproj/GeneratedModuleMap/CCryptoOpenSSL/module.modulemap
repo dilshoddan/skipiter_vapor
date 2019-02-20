@@ -1,4 +1,4 @@
 module CCryptoOpenSSL {
-    umbrella "/Users/admin/Documents/Books/skipiter_vapor/.build/checkouts/crypto.git-6812893159181741479/Sources/CCryptoOpenSSL/include"
+    umbrella "/Users/Home/Documents/work/Swift4/skipiter_vapor/.build/checkouts/crypto.git--6595018119362137062/Sources/CCryptoOpenSSL/include"
     export *
 }
