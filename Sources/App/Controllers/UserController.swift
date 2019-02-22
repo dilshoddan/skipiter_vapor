@@ -78,7 +78,7 @@ final class UserController {
         return User.query(on: req).all().map { users in
             var userPublics : [User.UserFacade] = []
             for user in users {
-                userPublics.append(User.UserFacade(name: user.name, email: user.email))
+                try userPublics.append(User.UserFacade(id: user.requireID(), name: user.name, email: user.email))
             }
             return userPublics
             

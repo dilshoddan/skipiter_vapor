@@ -42,6 +42,7 @@ extension User {
     }
     
     struct UserFacade: Content {
+        let id: Int
         let name: String
         let email: String
     }
