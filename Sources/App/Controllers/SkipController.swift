@@ -37,14 +37,14 @@ final class SkipController {
     
     func listSkipsOfUser(_ req: Request) throws -> Future<[Skip.SkipForm]> {
         let user = try req.requireAuthenticated(User.self)
-        return try req.content.decode(User.UserId.self).flatMap { userId in
+        return try req.content.decode(User.UserId.self).flatMap { userWithId in
             return Skip
                 .query(on: req)
-                .filter(\Skip.userID, .equal, userId.userId)
+                .filter(\Skip.userID, .equal, userWithId.userId)
                 .all().map { skips in
                     var skipForms : [Skip.SkipForm] = []
                     for skip in skips {
-                        skipForms.append(Skip.SkipForm(id: skip.id, text: skip.text, date: skip.date, userName: user.name))
+                        skipForms.append(Skip.SkipForm(id: skip.id, text: skip.text, date: skip.date, userName: userWithId.name))
                     }
                     return skipForms
             }

@@ -39,6 +39,7 @@ extension User {
     
     struct UserId: Content {
         let userId: Int
+        let name: String
     }
     
     struct UserFacade: Content {
